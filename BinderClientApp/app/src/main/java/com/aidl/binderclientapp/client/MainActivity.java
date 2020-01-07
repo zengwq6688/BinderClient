@@ -27,12 +27,11 @@ public class MainActivity extends AppCompatActivity {
 
     TextView test;
     IBookManager iBookManager;
-Binder c;
     ServiceConnection conn = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             Log.e("ServiceConnection", "onServiceConnected");
-            Log.e("ServiceConnection", "service---->"+service);
+            Log.e("ServiceConnection", "service---->" + service);
 
             iBookManager = Stub.asInterface(service);
         }
@@ -40,10 +39,7 @@ Binder c;
         @Override
         public void onServiceDisconnected(ComponentName name) {
             Log.e("ServiceConnection", "onServiceDisconnected");
-
-            Intent intent = new Intent();
-            intent.setComponent(new ComponentName("com.aidl.binderserverapp", "com.aidl.binderserverapp.MainActivity"));
-            startActivity(intent);
+            iBookManager=null;
         }
     };
 
@@ -74,21 +70,6 @@ Binder c;
         Intent intent = new Intent();
         intent.setComponent(new ComponentName("com.aidl.binderserverapp", "com.aidl.binderserverapp.RemoteService"));
         bindService(intent, conn, Context.BIND_AUTO_CREATE);
-    }
-
-    public boolean isRun(Context context) {
-        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningTaskInfo> list = am.getRunningTasks(100);
-        boolean isAppRunning = false;
-        String MY_PKG_NAME = "com.aidl.binderserverapp";
-        //100表示取的最大的任务数，info.topActivity表示当前正在运行的Activity，info.baseActivity表系统后台有此进程在运行
-        for (ActivityManager.RunningTaskInfo info : list) {
-            if (info.topActivity.getPackageName().equals(MY_PKG_NAME) || info.baseActivity.getPackageName().equals(MY_PKG_NAME)) {
-                isAppRunning = true;
-                break;
-            }
-        }
-        return isAppRunning;
     }
 
 }
